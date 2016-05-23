@@ -22,8 +22,7 @@ class Project < ActiveRecord::Base
   mount_uploader :uploaded_image, ProjectUploader
 
   delegate  :display_card_status, :display_status, :progress,
-            :display_image, :display_expires_at, :time_to_go,
-            :display_pledged, :display_pledged_with_cents, :display_goal, :progress_bar,
+            :display_image, :display_pledged, :display_pledged_with_cents, :display_goal, :progress_bar,
             :status_flag, :display_errors, to: :decorator
   delegate :bank, to: :account
 
@@ -112,11 +111,6 @@ class Project < ActiveRecord::Base
       Time.zone.parse(online_date),
       Time.zone.parse(online_date).end_of_day )}
 
-  scope :by_expires_at, ->(expires_at) {
-    between_dates('expires_at',
-      Time.zone.parse(expires_at),
-      Time.zone.parse(expires_at).end_of_day)}
-
   scope :by_updated_at, ->(updated_at) {
     between_dates('updated_at',
       Time.zone.parse(updated_at),
@@ -125,15 +119,8 @@ class Project < ActiveRecord::Base
   scope :recent, -> {
     between_dates('online_at', 5.days.ago, Time.current) }
 
-  scope :expiring, -> {
-    not_expired.between_dates('expires_at', Time.current, 2.weeks.from_now) }
-
-  scope :not_expiring, -> {
-    not_expired.where.not(expires_at: Time.current.. 2.weeks.from_now) }
-
   scope :financial, -> {
-    with_states(['online', 'successful', 'waiting_funds']).
-      between_dates('expires_at', 15.days.ago, Time.current) }
+    with_states(['online', 'successful', 'waiting_funds']) }
 
   scope :of_current_week, -> {
       between_dates('online_at', 7.days.ago, Time.current) }
@@ -186,7 +173,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :permalink, allow_nil: true
 
 
-  [:between_created_at, :between_expires_at, :between_online_at, :between_updated_at].each do |name|
+  [:between_created_at, :between_online_at, :between_updated_at].each do |name|
     define_singleton_method name do |starts_at, ends_at|
       return all unless starts_at.present? && ends_at.present?
       field = name.to_s.gsub('between_','')
@@ -255,10 +242,6 @@ class Project < ActiveRecord::Base
     paid_pledged >= goal
   end
 
-  def expired?
-    expires_at && pluck_from_database("is_expired")
-  end
-
   def in_time_to_wait?
     payments.waiting_payment.exists?
   end
@@ -312,7 +295,6 @@ class Project < ActiveRecord::Base
       category: self.category.name_pt,
       project_goal: self.goal,
       project_online_date: self.online_at,
-      project_expires_at: self.expires_at,
       project_address_city: self.account.try(:address_city),
       project_address_state: self.account.try(:address_state),
       account_entity_type: self.account.try(:entity_type)
@@ -348,12 +330,6 @@ class Project < ActiveRecord::Base
 
   def all_tags
     tags.map(&:name).join(", ")
-  end
-
-  def update_expires_at
-    if self.online_days.present? && self.online_at.present?
-      self.expires_at = ((self.mode == 'flex' ? Time.current : self.online_at.in_time_zone) + self.online_days.days).end_of_day
-    end
   end
 
   # State machine delegation methods

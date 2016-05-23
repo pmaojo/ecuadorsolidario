@@ -139,7 +139,6 @@ class ProjectsController < ApplicationController
     resource.build_flexible_project
     resource.state = 'draft'
     resource.online_days = nil
-    resource.expires_at = nil
     resource.save!
     resource.project_transitions.destroy_all
     redirect_to :back

@@ -11,9 +11,4 @@
       .w-col.w-col-6
         .fontsize-small.fontweight-semibold.lineheight-tightest
           | #{project.progress}%
-      .w-col.w-col-6.u-text-center-small-only
-        - unless !project.expires_at
-            = t('projects.project.time_remaining_small_html', count: project.time_to_go[:time], unit: project.time_to_go[:unit])
-        - else
-            | Prazo em aberto
 .divider.u-marginbottom-10

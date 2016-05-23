@@ -6,10 +6,6 @@
       .w-col-2.w-col
         = form.input :pg_search, as: :string, label: t('.permalink'), input_html: {value: current_scopes[:search_on_name]}
       .w-col-2.w-col
-        = form.input "between_expires_at[start_at]", as: :string, label: t(".between_expires_at"), input_html: {value: params[:between_expires_at] && params[:between_expires_at][:start_at], data: { fixed_mask: '99/99/9999' } }
-      .w-col-2.w-col
-        = form.input "between_expires_at[ends_at]", as: :string, label: '', input_html: {value: params[:between_expires_at] && params[:between_expires_at][:ends_at], data: { fixed_mask: '99/99/9999' } }
-      .w-col-2.w-col
         = form.input :by_progress, as: :string, label: t('.by_progress'), input_html: {value: params[:by_progress]}
       .w-col-2.w-col
         = form.input :user_name_contains, as: :string, label: t('.user'), input_html: {value: params[:user_name_contains]}
@@ -43,7 +39,6 @@
             th= t('.total_payment_service_fee')
             th= t('.total_catarse_fee')
             th= t('.repass_value')
-            th= t('.expires_at')
             th= t('.reports')
             th= t('.zero_fee')
             th= t('.state')
@@ -59,8 +54,6 @@
               = number_to_currency catarse_fee, precision: 2
             td
               = number_to_currency ((project.pledged*(1-project.service_fee))), precision: 2
-            td
-              = project.display_expires_at
             td
               = link_to t('.contribution_report'), admin_reports_contribution_reports_path(project_id: project.id, format: :csv)
             td

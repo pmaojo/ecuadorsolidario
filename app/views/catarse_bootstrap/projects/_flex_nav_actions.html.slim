@@ -6,5 +6,5 @@
     | &nbsp;&nbsp;
     span.fa.fa-chevron-right
 
-- if flexible_project.open_for_contributions? && flexible_project.expires_at.nil?
+- if flexible_project.open_for_contributions?
    = link_to t('.announce_expiration'), edit_project_path(@project, anchor: 'announce_expiration'), class: 'w-button btn btn-small btn-secondary-dark'

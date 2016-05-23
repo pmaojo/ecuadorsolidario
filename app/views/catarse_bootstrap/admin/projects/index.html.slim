@@ -20,7 +20,7 @@
       .w-col-2.w-col
         = form.input :with_state, collection: Project.state_names, label: t('admin.filter.with_state'), as: :select, selected: params[:with_state], include_blank: true, input_html: { class: 'w-input text-field' }
     .w-row
-      - [:between_created_at, :between_expires_at, :between_online_at, :between_updated_at, :goal_between].each_with_index do |between_field, index|
+      - [:between_created_at, :between_online_at, :between_updated_at, :goal_between].each_with_index do |between_field, index|
         - mask = (between_field == :goal_between ? nil : '99/99/9999')
         - if index % 3 == 0
           .w-row
@@ -64,9 +64,6 @@
             a data-sort="online_date" href='#'= t('.online_date')
             span.sort-order
           th.w-col-1.w-col
-            a data-sort="projects.expires_at" href='#'= t('.expires_at')
-            span.sort-order
-          th.w-col-1.w-col
             a data-sort="updated_at" href='#'= t('.last_modification')
             span.sort-order
           th.w-col-1.w-col= t('admin.table.state')
@@ -81,7 +78,6 @@
             td.w-col-1.w-col= project.total_contributions
             td.w-col-1.w-col= best_in_place [:admin, project], :recommended, method: :put, type: :checkbox, collection: [t('no'), t('yes')]
             td.w-col-1.w-col= project.online_at.strftime('%d/%m/%Y') if project.online_at
-            td.w-col-1.w-col= project.display_expires_at
             td.w-col-1.w-col= project.updated_at.strftime('%d/%m/%Y')
             td.w-col-1.w-col
               .w-dropdown-toggle.dropdown-toggle.project-admin-menu

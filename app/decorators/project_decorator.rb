@@ -36,10 +36,6 @@ class ProjectDecorator < Draper::Decorator
     use_uploaded_image(version) || use_video_tumbnail(version)
   end
 
-  def display_expires_at
-    source.expires_at ? I18n.l(source.pluck_from_database('zone_expires_at').to_date) : ''
-  end
-
   def progress
     return 0 if source.goal == 0.0 || source.goal.nil?
     ((source.pledged / source.goal) * 100).to_i
@@ -123,4 +119,3 @@ class ProjectDecorator < Draper::Decorator
     nil
   end
 end
-

@@ -6,8 +6,6 @@ br/
 br/
 | Arrecadado: #{project.display_pledged_with_cents}
 br/
-| Data de expiração: #{project.display_expires_at}
-br/
 | Dados do realizador:
 br/
 | Nome: #{project.user.name}
@@ -25,4 +23,3 @@ br/
 | Conta: #{project_account.try(:account)} - #{project_account.try(:account_digit)}
 br/
 | Nome do titular: #{project_account.try(:owner_name)}
-
